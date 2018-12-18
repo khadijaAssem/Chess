@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,9 +25,10 @@ void King(moves X);
 void Move(moves X);
 void Bishop(moves X);
 void Knight(moves X);
+void Undo(moves X);
 
 void Print_Maze(unsigned char N2,unsigned char N1){
- 
+
     printf ("\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n\n");
     for (i=0;i<8;i++){
        if (N2==1){
@@ -95,18 +94,19 @@ void Maze(){
     }
     Print_Maze(0,0);
 }
-void pieces(moves X){
-    char piece = toupper(maze[X.CrR][X.CrC]);
-   // printf("CrR: %d ,CrC: %c \nDesR: %d ,DesC: %c \n",X.CrR,X.CrC,X.DesR,X.DesC);
-    switch(piece){
-        case 'P':pawn(X);break;
-        case 'R':rook(X);break;
-        case 'K':King(X);break;
-        case 'Q':Queen(X);break;
-        case 'B':Bishop(X);break;
-        case 'N':Knight(X);break;
-    }
+void Scan(moves X){
+    char move[5];
+    scanf("%s",&move);
+    //if ()
+    X.CrR=move[1]-48;
+    X.CrC=(char)toupper((int)move[0]);
+    X.DesR=move[3]-48;
+    X.DesC=(char)toupper((int)move[2]);
+    //Undo(X);
+    Save();
+    pieces(X);
 }
+
 void rook(moves X){
     char DiffC=X.CrC-X.DesC , DiffR=X.CrR-X.DesR ;
     printf("%d\n%d\n",DiffC,DiffR);
@@ -174,34 +174,32 @@ void rook(moves X){
         Scan(X);
     }
 }
-
-void Scan(moves X){
-    char move[5];
-    scanf("%s",&move);
-    X.CrR=move[1]-48;
-    X.CrC=(char)toupper((int)move[0]);
-    X.DesR=move[3]-48;
-    X.DesC=(char)toupper((int)move[2]);
-    pieces(X);
+void pieces(moves X){
+    char piece = toupper(maze[X.CrR][X.CrC]);
+   // printf("CrR: %d ,CrC: %c \nDesR: %d ,DesC: %c \n",X.CrR,X.CrC,X.DesR,X.DesC);
+    switch(piece){
+        case 'P':pawn(X);break;
+        case 'R':rook(X);break;
+        case 'K':King(X);break;
+        case 'Q':Queen(X);break;
+        case 'B':Bishop(X);break;
+        case 'N':Knight(X);break;
+    }
 }
-
 
 int main()
 {
     N01=N02=0;
     moves X;
     Maze();
+    Save();
     while(1){
         printf("\nPlayer1 move:\n");
         X.ID=1;
         Scan(X);
         printf("\nPlayer2 move:\n");
         X.ID=2;
-        Scan(X);
-
     }
-
-
     return 0;
 }
 
@@ -544,7 +542,7 @@ void King(moves X){
              }
              Move(X);
         }
-           
+
         else{
             printf("Not available\nPlayer%d move:\n",X.ID);
             Scan(X);
@@ -574,7 +572,51 @@ void Move(moves X){
 }
 
 //check mate
-int Check_Mate(){
+/*int Check_Mate(){
     int index;
     for ()
+}*/
+void Undo(moves X){
+    static moves NX;
+    NX.CrC=X.DesC;
+    NX.CrR=X.DesR;
+    NX.DesC=X.CrC;
+    NX.DesR=X.CrR;
+    static moves Undo[2000];
+    static int Count = 0;
+    Undo[Count++]=X;
+}
+void Save(){
+    FILE *fb;
+    fb=fopen("Game.txt","w");//W for write
+    fprintf (fb,"\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n\n");
+    for (i=0;i<8;i++){
+       /*if (N2==1){
+            fprintf(fb,"\t%c   ",Out02[N2]);
+            N2--;
+        }
+        else if (N2){
+            fprintf(fb,"\t%c  %c",Out02[N2],Out02[--N2]);
+            N2-=2;
+        }
+        else fprintf(fb,"\t    ");*/
+        fprintf(fb,"\t    ");//Extra
+        fprintf(fb,"\t%d",i);
+        for (j='A';j<='H';j++){
+           fprintf(fb,"\t%c",maze[i][j]);
+        }
+        fprintf(fb,"\t%d\t",i);
+        /*if (N1==1){
+            fprintf(fb,"%c   \t",Out01[N1]);
+            N1--;
+        }
+        else if (N1){
+            fprintf(fb,"%c  %c\t",Out01[N1],Out01[--N1]);
+            N1--;
+        }*/
+        //else fprintf(fb,"    \t");
+        fprintf(fb,"\n\n");
+    }
+    fprintf(fb,"\n\n\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n");
+    fclose(fb);
 }
