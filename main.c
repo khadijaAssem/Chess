@@ -589,3 +589,147 @@ void Save(){
     fprintf(fb,"\n\n\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n");
     fclose(fb);
 }*/
+
+void check(){
+    X.DesC=j;
+    X.DesR=i;
+    X.CrC=n;
+    X.CrR=m;
+    
+    if (X.ID==1){
+        for(i=0;i<8;i++){
+            for(j='A';j<'I';j++){
+                if(maze[i][j]=='K'){
+                        for (m=0;m<8;m++){
+                            for(n='A';n<'I';n++){
+                                if(maze[m][n]='p'){
+                                    available=pawn(X);
+                                    if(available==1){
+                                        danger.name='p';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                                else if(maze[m][n]='n'){
+                                    available=Knight(X);
+                                    if(available==1){
+                                        danger.name='n';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                    
+                                }
+                                else if(maze[m][n]='r'){
+                                    available=0;
+                                    available=rook(X);
+                                    if(available==1){
+                                        danger.name='r';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                               else if(maze[m][n]='b'){
+                                    available=Bishop(X);
+                                    if(available==1){
+                                        danger.name='b';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                               }
+                                else if(maze[m][n]='q'){
+                                    available=Queen(X);
+                                    if(available==1){
+                                        danger.name='q';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                                else if(maze[m][n]='k'){
+                                    available=King(X);
+                                    if(available==1){
+                                        danger.name='k';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+    
+                            }
+                        }
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag==1)
+                break;
+        }
+    }
+    else{
+        for(i=0;i<8;i++){
+            for(j='A';j<'I';j++){
+                if(maze[i][j]=='k'){
+                        for (m=0;m<8;m++){
+                            for(n='A';n<'I';n++){
+                                if(maze[m][n]='P'){
+                                    available=pawn(X);
+                                    if(available==1){
+                                        danger.name='P';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                                else if(maze[m][n]='N'){
+                                    available=Knight(X);
+                                    if(available==1){
+                                        danger.name='N';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                    
+                                }
+                                else if(maze[m][n]='R'){
+                                    available=0;
+                                    available=rook(X);
+                                    if(available==1){
+                                        danger.name='R';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                               else if(maze[m][n]='B'){
+                                    available=Bishop(X);
+                                    if(available==1){
+                                        danger.name='B';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                               }
+                                else if(maze[m][n]='Q'){
+                                    available=Queen(X);
+                                    if(available==1){
+                                        danger.name='Q';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+                                else if(maze[m][n]='K'){
+                                    available=King(X);
+                                    if(available==1){
+                                        danger.name='K';
+                                        danger.row=m;
+                                        danger.colomn=n;
+                                    }
+                                }
+    
+                            }
+                        }
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag==1)
+                break;
+        }
+    }
+    if(available==1)
+        printf("\nCHECK\n!!!");
+}
