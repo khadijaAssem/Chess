@@ -19,7 +19,7 @@ typedef struct  {
 unsigned char maze[8][8];//main platform
 unsigned char i,j; //Counters
 unsigned char Out01[8],Out02[8];
-int available, N01=0,N02=0;
+int N01=0,N02=0;
 
 int pawn (moves X);
 int Queen(moves X);
@@ -75,7 +75,7 @@ void Maze(){
     maze [7][69]=75;
 
     i=1;
-    for(j='A';j<'H';j++){
+    for(j='A';j<='H';j++){
         maze[i][j]=112;
     }
     i+=5;
@@ -94,11 +94,11 @@ void Maze(){
                 maze[i][j]='-';
         }
     }
-    maze[1]['H']='.';
     Print_Maze(0,0);
 }
 
 int pieces(moves X){
+    int available;
     char piece = toupper(maze[X.CrR][X.CrC]);
     switch(piece){
         case 'P':available=pawn(X);break;
@@ -113,6 +113,7 @@ int pieces(moves X){
 
 int main()
 {
+    int available;
     moves X;
     Maze();
    // Save();
@@ -157,6 +158,7 @@ int main()
 }
 
 int pawn (moves X){
+    int available;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
     unsigned char i,j,promotion,flag=0;
     if (X.CrR==1||X.CrR==6){
@@ -240,6 +242,7 @@ int pawn (moves X){
 }
 
 int rook(moves X){
+    int available;
     char DiffC=X.CrC-X.DesC , DiffR=X.CrR-X.DesR ;
     printf("%d\n%d\n",DiffC,DiffR);
     if((X.ID==1 && maze[X.CrR][X.CrC]=='r' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='R' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
@@ -302,23 +305,31 @@ int rook(moves X){
 }
 
 int Knight(moves X){
+    int available;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
     if((abs(DiffR)==1&&abs(DiffC)==2) || (abs(DiffR)==2&&abs(DiffC)==1)){
-        if(X.ID==1 && maze[X.CrR][X.CrC]=='n' && maze[X.DesR][X.DesC]<97)
+        if(X.ID==1 && maze[X.CrR][X.CrC]=='n' && maze[X.DesR][X.DesC]<97){
+            printf("%c\n",maze[1]['H']);
             available=1;
+            printf("%c\n",maze[1]['H']);
+        }
+
         else if (X.ID==2 && maze[X.CrR][X.CrC]=='N' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))
             available=1;
+
         else
             available=0;
     }
     else
         available=0;
 
+
     return available;
 }
 
 
 int Bishop(moves X){
+    int available;
     printf("move from:%c%d to:%c%d\n",X.CrC,X.CrR,X.DesC,X.DesR);
     char DiffC=X.CrC-X.DesC , DiffR=X.CrR-X.DesR ;
     unsigned char i=X.CrR,flag=0,j=X.CrC;
@@ -388,6 +399,7 @@ int Bishop(moves X){
 
 
 int Queen(moves X){
+    int available;
      char DiffC=X.CrC-X.DesC , DiffR=X.CrR-X.DesR ;
      printf("move from:%c%d to:%c%d\n",X.CrC,X.CrR,X.DesC,X.DesR);
      unsigned char i=X.CrR,flag=0,j=X.CrC;
@@ -515,6 +527,7 @@ int Queen(moves X){
 }
 
 int King(moves X){
+    int available;
 
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
      if((X.ID==1 && maze[X.CrR][X.CrC]=='k' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='K' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
@@ -547,11 +560,7 @@ void Move(moves X){
     Print_Maze(N01,N02);
 }
 
-//check mate
-/*int Check_Mate(){
-    int index;
-    for ()
-}*/
+    
 /*void Undo(moves X){
     static moves NX;
     NX.CrC=X.DesC;
@@ -592,7 +601,6 @@ void Save(){
         }
         //else fprintf(fb,"    \t");
         fprintf(fb,"\n\n");
-    }
     fprintf(fb,"\n\n\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n");
     fclose(fb);
 }*/
@@ -740,3 +748,5 @@ void check(){
     if(available==1)
         printf("\nCHECK\n!!!");
 }
+
+       
