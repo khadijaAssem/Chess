@@ -134,6 +134,7 @@ int main()
                 else
                     printf("Not available");
             } while(1);
+        //check;
 
            do{
                 printf("\nPlayer2 move:\n");
