@@ -10,6 +10,12 @@ typedef struct  {
     unsigned char DesC;
 }moves ;
 
+typedef struct  {
+    unsigned char name;
+    unsigned char row;
+    unsigned char colomn;
+}danger ;
+
 unsigned char maze[8][8];//main platform
 unsigned char i,j; //Counters
 unsigned char Out01[8],Out02[8];
