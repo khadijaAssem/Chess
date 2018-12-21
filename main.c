@@ -569,7 +569,7 @@ void Move(moves X){
     NX.DesR=X.CrR;
     static moves Undo[2000];
     static int Count = 0;
-    Undo[Count++]=X;
+    Undo[Count++]=NX;
 }
 void Save(){
     FILE *fb;
