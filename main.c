@@ -16,11 +16,20 @@ typedef struct  {
     unsigned char colomn;
 }danger ;
 
+typedef struct {
+    unsigned char R;
+    unsigned char C;
+}King_I;
+
+King_I I01;
+
+King_I I02;
+
 unsigned char maze[8][8];//main platform
-unsigned char i,j; //Counters
 unsigned char Out01[8],Out02[8];
 int N01=0,N02=0;
 
+int rook(moves X);
 int pawn (moves X);
 int Queen(moves X);
 int King(moves X);
@@ -28,9 +37,10 @@ int Bishop(moves X);
 int Knight(moves X);
 void Move(moves X);
 void Undo(moves X);
+void check(moves X);
 
 void Print_Maze(unsigned char N2,unsigned char N1){
-
+    unsigned char i,j; //Counters
     printf ("\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n\n");
     for (i=0;i<8;i++){
        /*if (N2==1){
@@ -73,7 +83,7 @@ void Maze(){
     maze [7][67]=maze[7][70]=66;
     maze [7][68]=81;
     maze [7][69]=75;
-
+    unsigned char i,j; //Counters
     i=1;
     for(j='A';j<='H';j++){
         maze[i][j]=112;
@@ -110,9 +120,13 @@ int pieces(moves X){
     }
     return available;
 }
-
+//******************************************************************//
 int main()
 {
+    I01.R = 0;
+    I01.C = 'E';
+    I02.R = 7;
+    I02.C = 'E';
     int available;
     moves X;
     Maze();
@@ -135,7 +149,7 @@ int main()
                 else
                     printf("Not available");
             } while(1);
-        //check;
+        check(X);
 
            do{
                 printf("\nPlayer2 move:\n");
@@ -156,90 +170,174 @@ int main()
     }
     return 0;
 }
-
+//******************************************************************//
 int pawn (moves X){
-    int available;
+
+    int available=0;
+
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
+
     unsigned char i,j,promotion,flag=0;
+
     if (X.CrR==1||X.CrR==6){
+
         if (((((X.ID==2)&&(DiffR==2))||((X.ID==1)&&(DiffR==-2)))&&(DiffC==0))||((((X.ID==2)&&(DiffR==1))||((X.ID==1)&&(DiffR==-1)))&&(DiffC==0)))
+
            flag=1;
+
         else flag = 0;
+
     }
+
     else if((abs(DiffC)==1&&abs(DiffR)==1)&&((X.ID==1&& DiffR==-1&&(maze[X.DesR][X.DesC]>65 && maze[X.DesR][X.DesC]<90))||(X.ID==2&&DiffR==1&&maze[X.DesR][X.DesC]>90))){
+
             available=1;
+
             flag=1;
+
             if ((X.ID==1&&X.DesR==7)||(X.ID==2&&X.DesR==0)){
+
                 printf("Promotion!!! choose your piece:\nQ\nR\nB\nN\n");
+
                 scanf(" %c",&promotion);
+
                 if (X.ID==1)
+
                     maze[X.DesR][X.DesC]=tolower(promotion);
+
                 else
+
                     maze[X.DesR][X.DesC]=toupper(promotion);
+
                 Print_Maze(N01,N02);
 
+
+
             }
+
     }
+
     else{
+
         if ((((X.ID==2)&&(DiffR==1))||((X.ID==1)&&(DiffR==-1)))&&(DiffC==0))
+
             flag=1;
+
         else flag = 0;
+
     }
+
     if (flag == 1 && DiffC==0){
+
         j=X.DesR;
+
         if (X.ID==1){
+
             for (i=X.DesR;i>X.CrR;i--){
+
                 if (maze[i][X.CrC]=='.'||maze[i][X.CrC]=='-')
+
                     j--;
+
                 else{
+
                     j++;
+
                     break;
+
                 }
+
             }
+
                 if (j==X.CrR){
+
                          available=1;
+
                         if ((X.ID==1&&X.DesR==7)||(X.ID==2&&X.DesR==0)){
+
                             printf("Promotion!!! choose your piece:\nQ\nR\nB\nN\n");
+
                             scanf(" %c",&promotion);
+
                             if (X.ID==1)
+
                                 maze[X.DesR][X.DesC]=tolower(promotion);
+
                             else
+
                                 maze[X.DesR][X.DesC]=toupper(promotion);
+
                             Print_Maze(N01,N02);
+
                     }
+
                 }
+
+
 
                 else  flag = 0;
+
            }
+
            else {
+
                 for (i=X.DesR;i<X.CrR;i++){
+
                     if (maze[i][X.CrC]=='.'||maze[i][X.CrC]=='-')
+
                         j++;
+
                     else{
+
                         j--;
+
                         break;
+
                     }
+
                 }
+
             if (j==X.CrR){
+
                 available=1;
+
                 if ((X.ID==1&&X.DesR==7)||(X.ID==2&&X.DesR==0)){
+
                     printf("Promotion!!! choose your piece:\nQ\nR\nB\nN\n");
+
                     scanf(" %c",&promotion);
+
                     if (X.ID==1)
+
                         maze[X.DesR][X.DesC]=tolower(promotion);
+
                     else
+
                         maze[X.DesR][X.DesC]=toupper(promotion);
+
                     Print_Maze(N01,N02);
+
                 }
+
             }
+
             else  flag = 0;
+
            }
+
     }
+
     if (flag==0)
+
         available=0;
 
+
+
     return available;
+
 }
+
+
 
 int rook(moves X){
     int available;
@@ -528,10 +626,18 @@ int Queen(moves X){
 
 int King(moves X){
     int available;
-
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
      if((X.ID==1 && maze[X.CrR][X.CrC]=='k' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='K' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
         if(((DiffC==0)&&(abs(DiffR)==1))||((abs(DiffC)==1)&&(DiffR==0))||((abs(DiffC)==1)&&(abs(DiffR)==1))){
+             //King index
+             if (maze[X.CrR][X.CrC]=='k'){
+                I01.R=X.DesR;
+                I01.C=X.DesC;
+            }
+            else if (maze[X.CrR][X.CrC]=='K'){
+                I02.R=X.DesR;
+                I02.C=X.DesC;
+            }
              available=1;
         }
 
@@ -544,10 +650,12 @@ int King(moves X){
 }
 
 void Move(moves X){
+    //Eating aray
     if (maze[X.DesR][X.DesC]>96)
         Out01[N01++]=maze[X.DesR][X.DesC];
     else if(maze[X.DesR][X.DesC]>65&&maze[X.DesR][X.DesC]<90)
         Out02[N02++]=maze[X.DesR][X.DesC];
+    //Moving elements
     maze[X.DesR][X.DesC]=maze[X.CrR][X.CrC];
     if (X.CrR%2==0&&X.CrC%2==0)
         maze[X.CrR][X.CrC]='-';
@@ -560,8 +668,9 @@ void Move(moves X){
     Print_Maze(N01,N02);
 }
 
-    
+
 /*void Undo(moves X){
+
     static moves NX;
     NX.CrC=X.DesC;
     NX.CrR=X.DesR;
@@ -605,148 +714,137 @@ void Save(){
     fclose(fb);
 }*/
 
-void check(){
-    X.DesC=j;
-    X.DesR=i;
-    X.CrC=n;
-    X.CrR=m;
-    
+void check(moves X){
+    struct {
+        unsigned char name;
+        unsigned char row;
+        unsigned char colomn;
+    } danger;
+    int available;
+    X.DesC=I01.C;
+    X.DesR=I02.R;
+    unsigned char n=X.CrC;
+    unsigned char m=X.CrR;
     if (X.ID==1){
-        for(i=0;i<8;i++){
-            for(j='A';j<'I';j++){
-                if(maze[i][j]=='K'){
-                        for (m=0;m<8;m++){
-                            for(n='A';n<'I';n++){
-                                if(maze[m][n]='p'){
-                                    available=pawn(X);
-                                    if(available==1){
-                                        danger.name='p';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                                else if(maze[m][n]='n'){
-                                    available=Knight(X);
-                                    if(available==1){
-                                        danger.name='n';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                    
-                                }
-                                else if(maze[m][n]='r'){
-                                    available=0;
-                                    available=rook(X);
-                                    if(available==1){
-                                        danger.name='r';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                               else if(maze[m][n]='b'){
-                                    available=Bishop(X);
-                                    if(available==1){
-                                        danger.name='b';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                               }
-                                else if(maze[m][n]='q'){
-                                    available=Queen(X);
-                                    if(available==1){
-                                        danger.name='q';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                                else if(maze[m][n]='k'){
-                                    available=King(X);
-                                    if(available==1){
-                                        danger.name='k';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-    
-                            }
-                        }
-                    flag=1;
-                    break;
+        for (m=0;m<8;m++){
+            for(n='A';n<'I';n++){
+                if(maze[m][n]='p'){
+                    available=pawn(X);
+                    if(available==1){
+                        danger.name='p';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='n'){
+                    available=Knight(X);
+                    if(available==1){
+                        danger.name='n';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='r'){
+                    available=0;
+                    available=rook(X);
+                    if(available==1){
+                        danger.name='r';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='b'){
+                    available=Bishop(X);
+                    if(available==1){
+                        danger.name='b';
+                        danger.row=m;
+                        danger.colomn=n;
+                   }
+                }
+                else if(maze[m][n]='q'){
+                    available=Queen(X);
+                    if(available==1){
+                        danger.name='q';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='k'){
+                    available=King(X);
+                    if(available==1){
+                        danger.name='k';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
                 }
             }
-            if(flag==1)
-                break;
         }
     }
     else{
-        for(i=0;i<8;i++){
-            for(j='A';j<'I';j++){
-                if(maze[i][j]=='k'){
-                        for (m=0;m<8;m++){
-                            for(n='A';n<'I';n++){
-                                if(maze[m][n]='P'){
-                                    available=pawn(X);
-                                    if(available==1){
-                                        danger.name='P';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                                else if(maze[m][n]='N'){
-                                    available=Knight(X);
-                                    if(available==1){
-                                        danger.name='N';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                    
-                                }
-                                else if(maze[m][n]='R'){
-                                    available=0;
-                                    available=rook(X);
-                                    if(available==1){
-                                        danger.name='R';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                               else if(maze[m][n]='B'){
-                                    available=Bishop(X);
-                                    if(available==1){
-                                        danger.name='B';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                               }
-                                else if(maze[m][n]='Q'){
-                                    available=Queen(X);
-                                    if(available==1){
-                                        danger.name='Q';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-                                else if(maze[m][n]='K'){
-                                    available=King(X);
-                                    if(available==1){
-                                        danger.name='K';
-                                        danger.row=m;
-                                        danger.colomn=n;
-                                    }
-                                }
-    
-                            }
-                        }
-                    flag=1;
-                    break;
+        for (m=0;m<8;m++){
+            for(n='A';n<'I';n++){
+                if(maze[m][n]='P'){
+                    available=pawn(X);
+                    if(available==1){
+                        danger.name='P';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='N'){
+                    available=Knight(X);
+                    if(available==1){
+                        danger.name='N';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='R'){
+                    available=rook(X);
+                    if(available==1){
+                        danger.name='R';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='B'){
+                    available=Bishop(X);
+                    if(available==1){
+                        danger.name='B';
+                        danger.row=m;
+                        danger.colomn=n;
+                   }
+                }
+                else if(maze[m][n]='Q'){
+                    available=Queen(X);
+                    if(available==1){
+                        danger.name='Q';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
+                }
+                else if(maze[m][n]='K'){
+                    available=King(X);
+                    if(available==1){
+                        danger.name='K';
+                        danger.row=m;
+                        danger.colomn=n;
+                    }
                 }
             }
-            if(flag==1)
-                break;
         }
     }
     if(available==1)
         printf("\nCHECK\n!!!");
 }
-
-       
+/*void check_Mate(){
+    for (int I=K.R;I<){
+        for (){
+            check();
+            if (check()==1){
+                available=1;
+            else
+            }
+        }
+    }
+}*/
