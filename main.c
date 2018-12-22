@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -144,6 +143,7 @@ int main()
                 X.DesC=toupper(moves[2]);
                 available=pieces(X);
                 if (available==1){
+
                     Move(X);
                     break;
                 }
@@ -263,7 +263,6 @@ int pawn (moves X){
 }
 
 int rook(moves X){
-    unsigned char i,j;
     int available;
     char DiffC=X.CrC-X.DesC , DiffR=X.CrR-X.DesR ;
     if((X.ID==1 && maze[X.CrR][X.CrC]=='r' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='R' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
@@ -326,7 +325,6 @@ int rook(moves X){
 }
 
 int Knight(moves X){
-    unsigned char i,j;
     int available;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
     if((abs(DiffR)==1&&abs(DiffC)==2) || (abs(DiffR)==2&&abs(DiffC)==1)){
@@ -544,7 +542,6 @@ int Queen(moves X){
 }
 
 int King(moves X){
-    unsigned char i,j;
     int available;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
      if((X.ID==1 && maze[X.CrR][X.CrC]=='k' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='K' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
@@ -594,7 +591,7 @@ void Move(moves X){
     fb=fopen("Game.txt","w");//W for write
     fprintf (fb,"\t\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n\n");
     for (i=0;i<8;i++){
-       /*if (N2==1){
+       if (N2==1){
             fprintf(fb,"\t%c   ",Out02[N2]);
             N2--;
         }
@@ -787,3 +784,4 @@ void check(moves X){
         printf("\nCHECK PLATER1!!!\n");
     }
 }
+
