@@ -18,11 +18,11 @@ typedef struct  {
 }dangerous ;
 
 typedef struct {
-    unsigned char R;
-    unsigned char C;
+    unsigned char R01;
+    unsigned char R02;
+    unsigned char C01;
+    unsigned char C02;
 }King_I;
-King_I I01;
-King_I I02;
 unsigned char N01=0,N02=0;
 
 unsigned char maze[8][8];//main platform
@@ -37,7 +37,7 @@ int Bishop(moves X);
 int Knight(moves X);
 void Move(moves X);
 void Undo(moves X);
-int check(moves X);
+int check(moves X,unsigned char i, unsigned char j);
 
 void Print_Maze(unsigned char N1,unsigned char N2){
     unsigned char i,j;
@@ -87,10 +87,6 @@ void Maze(){
     maze [7][68]=81;
     maze [7][69]=75;
 
-    I01.C = I02.C = 69;
-    I01.R = 0;
-    I02.R = 7;
-
     i=1;
     for(j='A';j<='H';j++){
         maze[i][j]=112;
@@ -130,14 +126,29 @@ int pieces(moves X){
 
     return available;
 }
+King_I Index(moves X,unsigned char Poo){
+	static King_I index = {0,7,69,69};
+	if (Poo==1){
+		index.R01=X.DesR;
+        index.C01=X.DesC;
+        return index;
+	}
+	else if (Poo==2){
+		index.R02=X.DesR;
+        index.C02=X.DesC;
+        return index;
+	}
+	else
+		return index;
+}
 
 int main()
 {
     int available;
     moves X;
     Maze();
-   // Save();
-   char moves[5];
+  //Save();
+    char moves[5];
     while(1){
             do{
                 printf("\nPlayer1 move:\n");
@@ -157,7 +168,7 @@ int main()
                     printf("Not available\n");
             } while(1);
 
-            check(X);
+            check_Mate(X);
 
            do{
                 printf("\nPlayer2 move:\n");
@@ -176,7 +187,7 @@ int main()
                     printf("Not available");
             } while(1);
 
-            check(X);
+            check_Mate(X);
     }
     return 0;
 }
@@ -548,21 +559,17 @@ int Queen(moves X){
 }
 
 int King(moves X){
-    int available;
-
+    unsigned char available;
+    unsigned char Poo;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
      if((X.ID==1 && maze[X.CrR][X.CrC]=='k' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='K' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
         if(((DiffC==0)&&(abs(DiffR)==1))||((abs(DiffC)==1)&&(DiffR==0))||((abs(DiffC)==1)&&(abs(DiffR)==1))){
             //King index
-             if (maze[X.CrR][X.CrC]=='k'){
-                I01.R=X.DesR;
-                I01.C=X.DesC;
-            }
-            else if (maze[X.CrR][X.CrC]=='K'){
-                I02.R=X.DesR;
-                I02.C=X.DesC;
-            }
-             available=1;
+             if (maze[X.CrR][X.CrC]=='k')
+                Index(X,1);
+            else if (maze[X.CrR][X.CrC]=='K')
+                Index(X,2);
+            available=1;
         }
 
         else
@@ -636,13 +643,13 @@ void Move(moves X){
     fclose(fb);
 }*/
 
-int check(moves X){
+int check(moves X,unsigned char i,unsigned char j){
     unsigned char available=0,n,m;
     dangerous danger;
     unsigned char counter1=0,counter2=0;
     if (X.ID==1){
-        X.DesC=I01.C;
-        X.DesR=I02.R;
+        X.DesC=j;
+        X.DesR=i;
         for (m=0;m<8;m++){
             for(n='A';n<'I';n++){
                 X.CrC=n;
@@ -705,12 +712,12 @@ int check(moves X){
 
             }
         }
-        if(counter2)
-            return 1;
+    	if(counter2)
+        	return 1;
     }
     else if(X.ID==2){
-        X.DesC=I01.C;
-        X.DesR=I02.R;
+        X.DesC=i;
+        X.DesR=j;
         for (m=0;m<8;m++){
             for(n='A';n<'I';n++){
                 X.CrC=n;
@@ -773,43 +780,49 @@ int check(moves X){
 
             }
         }
-        if(counter1)
-            return 1;
+    	if(counter1)
+        	return 1;
     }
     else return 0;
 }
 
 void check_Mate(moves X){
-    King_I index01,index02;
-    index01 = I01;
-    index02 = I02;
-    unsigned char i,j,available=0,Count=0,flag=0;
-    for (i=I01.R-1;i<=I01.R+1;i++){
-        for (j=I01.C-1;j<=I01.C+1;j++){
-            if (X.ID==1){
-                I02.C=j;
-                I02.R=i;
-            }
-            else {
-                I01.C=j;
-                I01.R=i;
-            }
-            if (check(X)==1){
-                if (X.ID==1 && i==index01.R && j== index01.C)
-                    flag=1;
-                else if (X.ID==2 && i==index02.R && j== index02.C)
-                    flag==1;
-                available=1;
-                Count++;
-            }
-        }
-    }
-    if(available==1&&Count<8)
+	King_I index = Index(X,0);
+
+	unsigned char i,j,available=0,Count=0,flag=0;
+	if (X.ID==1){
+		for (i=index.R02-1;i<=index.R02+1;i++){
+	        for (j=index.C02-1;j<=index.C02+1;j++){
+	        	if (check(X,i,j)==1){
+	            	if ((i==index.R02)&& (j== index.C02))
+	            		flag=1;
+	           	    available=1;
+	                Count++;
+	            }
+			}
+	    }
+	}
+	else if (X.ID==2){
+		for (i=index.R01-1;i<=index.R01+1;i++){
+	        for (j=index.C01-1;j<=index.C01+1;j++){
+	        	if (check(X,i,j)==1){
+	            	if ((i == index.R01) && (j == index.C01))
+	            		flag==1;
+	           	    available=1;
+	                Count++;
+	            }
+			}
+	    }
+	}
+
+    if (flag)
         printf("\nCHECK!!!\n");
     else if (available==1&&Count==9){
-        printf ("\nCHECKMATE!!\n");
-        exit(1);
+    	printf ("\nCHECKMATE!!\n");
+    	exit(1);
     }
-    else if (available==1&&Count==8&&flag=0)
-        printf("\nSTALEMATE!!\n");
+    else if ((available==1)&&(Count==8)&&(flag=0)){
+    	printf("\nSTALEMATE!!\n");
+    	exit(1);
+    }
 }
