@@ -65,7 +65,7 @@ void Print_Maze(unsigned char N1,unsigned char N2){
                 printf("%c %c",Out02[2*i],Out02[2*i+1]);
             }
             if (N2%2==1&&2*i>=N2-1)
-                printf("%c",Out01[N2-1]);
+                printf("%c",Out02[N2-1]);
         }
         printf("\n\n");
     }
