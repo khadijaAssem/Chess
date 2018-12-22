@@ -716,8 +716,8 @@ int check(moves X,unsigned char i,unsigned char j){
         	return 1;
     }
     else if(X.ID==2){
-        X.DesC=i;
-        X.DesR=j;
+        X.DesC=j;
+        X.DesR=i;
         for (m=0;m<8;m++){
             for(n='A';n<'I';n++){
                 X.CrC=n;
