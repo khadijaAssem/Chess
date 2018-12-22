@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,11 +22,11 @@ typedef struct {
     unsigned char R;
     unsigned char C;
 }King_I;
+unsigned char N01=0,N02=0;
 
 unsigned char maze[8][8];//main platform
 unsigned char Out01[8],Out02[8];
 dangerous arr1[16],arr2[16];;
-int N01=0,N02=0;
 
 int pawn (moves X);
 int Queen(moves X);
@@ -37,33 +38,35 @@ void Move(moves X);
 void Undo(moves X);
 void check(moves X);
 
-void Print_Maze(unsigned char N2,unsigned char N1){
+void Print_Maze(unsigned char N1,unsigned char N2){
     unsigned char i,j;
     printf ("\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n\n");
     for (i=0;i<8;i++){
-       /*if (N2==1){
-            printf("\t%c   ",Out02[N2]);
-            N2--;
+
+        if (N1>0&&2*i<N1){
+            if(N1%2==0)
+                printf("%c %c",Out01[2*i],Out01[2*i+1]);
+            else if (N1-1>0&&2*i<N1-1){
+                printf("%c %c",Out01[2*i],Out01[2*i+1]);
+            }
+            if (N1%2==1&&2*i>=N1-1)
+                printf("%c",Out01[N1-1]);
         }
-        else if (N2){
-            printf("\t%c  %c",Out02[N2],Out02[--N2]);
-            N2-=2;
-        }
-        else printf("\t    ");*/
+
         printf("\t%d",i);
         for (j='A';j<='H';j++){
            printf("\t%c",maze[i][j]);
         }
         printf("\t%d\t",i);
-        /*if (N1==1){
-            printf("%c   \t",Out01[N1]);
-            N1--;
+        if (N2>0&&2*i<N2){
+            if(N2%2==0)
+                printf("%c %c",Out02[2*i],Out02[2*i+1]);
+            else if (N2-1>0&&2*i<N2-1){
+                printf("%c %c",Out02[2*i],Out02[2*i+1]);
+            }
+            if (N2%2==1&&2*i>=N2-1)
+                printf("%c",Out01[N2-1]);
         }
-        else if (N1){
-            printf("%c  %c\t",Out01[N1],Out01[--N1]);
-            N1--;
-        }
-        else printf("    \t");*/
         printf("\n\n");
     }
     printf ("\n\n\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n");
@@ -179,6 +182,10 @@ int pawn (moves X){
     if (X.CrR==1||X.CrR==6){
         if (((((X.ID==2)&&(DiffR==2))||((X.ID==1)&&(DiffR==-2)))&&(DiffC==0))||((((X.ID==2)&&(DiffR==1))||((X.ID==1)&&(DiffR==-1)))&&(DiffC==0)))
            flag=1;
+        else if((abs(DiffC)==1&&abs(DiffR)==1)&&((X.ID==1&& DiffR==-1&&(maze[X.DesR][X.DesC]>65 && maze[X.DesR][X.DesC]<90))||(X.ID==2&&DiffR==1&&maze[X.DesR][X.DesC]>90))){
+                available=1;
+                flag=1;
+        }
         else flag = 0;
     }
     else if((abs(DiffC)==1&&abs(DiffR)==1)&&((X.ID==1&& DiffR==-1&&(maze[X.DesR][X.DesC]>65 && maze[X.DesR][X.DesC]<90))||(X.ID==2&&DiffR==1&&maze[X.DesR][X.DesC]>90))){
@@ -554,10 +561,10 @@ int King(moves X){
 }
 
 void Move(moves X){
-    /*if (maze[X.DesR][X.DesC]>96)
+    if (maze[X.DesR][X.DesC]>96)
         Out01[N01++]=maze[X.DesR][X.DesC];
     else if(maze[X.DesR][X.DesC]>65&&maze[X.DesR][X.DesC]<90)
-        Out02[N02++]=maze[X.DesR][X.DesC];*/
+        Out02[N02++]=maze[X.DesR][X.DesC];
     //Undo(X);
     maze[X.DesR][X.DesC]=maze[X.CrR][X.CrC];
     if (X.CrR%2==0&&X.CrC%2==0)
@@ -780,15 +787,3 @@ void check(moves X){
         printf("\nCHECK PLATER1!!!\n");
     }
 }
-
-/*void check_Mate(){
-    for (int I=K.R;I<){
-        for (){
-            check();
-            if (check()==1){
-                available=1;
-            else
-            }
-        }
-    }
-}*/
