@@ -23,11 +23,13 @@ typedef struct {
     unsigned char C01;
     unsigned char C02;
 }King_I;
-unsigned char N01=0,N02=0;
 
+unsigned char N01=0,N02=0;
 unsigned char maze[8][8];//main platform
 unsigned char Out01[8],Out02[8];
-dangerous arr1[16],arr2[16];;
+dangerous arr1[16],arr2[16];
+moves Undo[2000];
+int count=0;
 
 int pawn (moves X);
 int Queen(moves X);
@@ -37,8 +39,10 @@ int Bishop(moves X);
 int Knight(moves X);
 void Move(moves X);
 void Undo(moves X);
-int check(moves X,unsigned char i, unsigned char j);
+void print_redo(int z);
+void print_undo(int z);
 void check_Mate(moves X);
+int check(moves X,unsigned char i, unsigned char j);
 
 void Print_Maze(unsigned char N1,unsigned char N2){
     unsigned char i,j;
@@ -143,49 +147,116 @@ King_I Index(moves X,unsigned char Poo){
 		return index;
 }
 
+
 int main()
 {
     int available;
+    char ch;
+    int t1=0,t2=0,z;
     moves X;
     Maze();
-  //Save();
-    char moves[5];
+   // Save();
+   char moves[5];
     while(1){
+
             do{
+                z=count-1;
                 printf("\nPlayer1 move:\n");
                 X.ID=1;
                 scanf("%s",&moves);
-                X.CrR=moves[1]-48;
-                X.CrC=toupper(moves[0]);
-                X.DesR=moves[3]-48;
-                X.DesC=toupper(moves[2]);
-                available=pieces(X);
-                if (available==1){
-
-                    Move(X);
-                    break;
+                if(strlen(moves)==1){
+                    ch=moves[0];
+                    if(ch=='u' || ch=='U'){
+                            if(z>=0){
+                                print_undo(z);
+                                z--;
+                                count--;
+                                t1++;
+                                break;
+                            }
+                            else
+                                printf("Not available");
+                    }
+                    else if(ch=='r' || ch=='R'){
+                            if(t2<=t1-1){
+                                print_redo(z+1);
+                                z++;
+                                count++;
+                                t2++;
+                                break;
+                            }
+                            else
+                                printf("Not available");
+                    }
+                    else
+                        printf("Not available");
                 }
-                else
-                    printf("Not available\n");
+
+                else{
+                    X.CrR=moves[1]-48;
+                    X.CrC=toupper(moves[0]);
+                    X.DesR=moves[3]-48;
+                    X.DesC=toupper(moves[2]);
+                    available=pieces(X);
+                    if (available==1){
+                        Move(X);
+                        break;
+                    }
+                    else
+                        printf("Not available\n");
+                    }
+
             } while(1);
 
             check_Mate(X);
 
            do{
+                z=count-1;
                 printf("\nPlayer2 move:\n");
                 X.ID=2;
                 scanf("%s",&moves);
-                X.CrR=moves[1]-48;
-                X.CrC=toupper(moves[0]);
-                X.DesR=moves[3]-48;
-                X.DesC=toupper(moves[2]);
-                available=pieces(X);
-                if (available==1){
-                    Move(X);
-                    break;
+                if(strlen(moves)==1){
+                    ch=moves[0];
+                    if(ch=='u' || ch=='U'){
+                            if(z>=0){
+                                print_undo(z);
+                                z--;
+                                count--;
+                                t1++;
+                                break;
+                            }
+                            else
+                                printf("Not available");
+                    }
+                    else if(ch=='r' || ch=='R'){
+                            if(t2<=t1-1){
+                                print_redo(z+1);
+                                z++;
+                                count++;
+                                t2++;
+                                break;
+                            }
+                            else
+                                printf("Not available");
+
+                    }
+                    else
+                        printf("Not available");
                 }
-                else
-                    printf("Not available");
+                else{
+                    X.CrR=moves[1]-48;
+                    X.CrC=toupper(moves[0]);
+                    X.DesR=moves[3]-48;
+                    X.DesC=toupper(moves[2]);
+                    available=pieces(X);
+                    if (available==1){
+                        Move(X);
+                        break;
+                    }
+                    else
+                        printf("Not available");
+                }
+
             } while(1);
 
             check_Mate(X);
@@ -585,7 +656,7 @@ void Move(moves X){
         Out01[N01++]=maze[X.DesR][X.DesC];
     else if(maze[X.DesR][X.DesC]>65&&maze[X.DesR][X.DesC]<90)
         Out02[N02++]=maze[X.DesR][X.DesC];
-    //Undo(X);
+    undo(X);
     maze[X.DesR][X.DesC]=maze[X.CrR][X.CrC];
     if (X.CrR%2==0&&X.CrC%2==0)
         maze[X.CrR][X.CrC]='-';
@@ -599,16 +670,33 @@ void Move(moves X){
 }
 
 
-/*void Undo(moves X){
-    static moves NX;
+void undo(moves X){
+    moves NX;
     NX.CrC=X.DesC;
     NX.CrR=X.DesR;
     NX.DesC=X.CrC;
     NX.DesR=X.CrR;
-    static moves Undo[2000];
-    static int Count = 0;
-    Undo[Count++]=NX;
-}*/
+    Undo[count++]=NX;
+}
+
+void print_undo(int z){
+    unsigned char a,b,c,d;
+    a=maze[Undo[z].CrR][Undo[z].CrC];
+    b=maze[Undo[z].DesR][Undo[z].DesC];
+    maze[Undo[z].CrR][Undo[z].CrC]=b;
+    maze[Undo[z].DesR][Undo[z].DesC]=a;
+    Print_Maze(N01,N02);
+}
+void print_redo(int z){
+    unsigned char a,b,c,d;
+    a=maze[Undo[z].CrR][Undo[z].CrC];
+    b=maze[Undo[z].DesR][Undo[z].DesC];
+    maze[Undo[z].CrR][Undo[z].CrC]=b;
+    maze[Undo[z].DesR][Undo[z].DesC]=a;
+    Print_Maze(N01,N02);
+
+}
+
 /*void Save(){
     FILE *fb;
     fb=fopen("Game.txt","w");//W for write
