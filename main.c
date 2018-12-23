@@ -43,6 +43,7 @@ void print_redo(int z);
 void print_undo(int z);
 void check_Mate(moves X);
 int check(moves X,unsigned char i, unsigned char j);
+int freeze(moves X);
 
 void Print_Maze(unsigned char N1,unsigned char N2){
     unsigned char i,j;
@@ -151,8 +152,8 @@ King_I Index(moves X,unsigned char Poo){
 
 int main()
 {
-    unsigned char ch,i,j,a,b,c,d;
-    int t1=0,t2=0,z,available,freez,flag;
+    unsigned char ch,i,j,f;
+    int t1=0,t2=0,z,available;
     moves X;
     Maze();
    // Save();
@@ -160,8 +161,6 @@ int main()
     while(1){
 
             do{
-                flag=0;
-                freez=1;
                 z=count-1;
                 printf("\nPlayer1 move:\n");
                 X.ID=1;
@@ -199,39 +198,11 @@ int main()
                     X.CrC=toupper(moves[0]);
                     X.DesR=moves[3]-48;
                     X.DesC=toupper(moves[2]);
-                    a=maze[X.CrR][X.CrC];
-                    b=maze[X.DesR][X.DesC];
                     available=pieces(X);
                     if (available==1){
-                            for(i=0;i<8;i++){
-                                for(j='A';j<'I';j++){
-                                    if(maze[i][j]=='k'){
-                                        flag=1;
-                                        X.ID=2;
-                                        maze[X.DesR][X.DesC]=a;
-                                        maze[X.CrR][X.CrC]='.';
-                                        freez=check(X,i,j);
-                                        X.ID=1;
-                                        maze[X.DesR][X.DesC]=b;
-                                        maze[X.CrR][X.CrC]=a;
-                                        if(freez==0){
-                                            Move(X);
-                                        }
-                                        else
-                                          printf("Not available(frozen)\n");
-
-                                    }
-                                    if(flag==1)
-                                        break;
-
-                                }
-                                if(flag==1)
-                                    break;
-
-                            }
-                            if(freez==0)
-                                break;
-
+                        f=freeze(X);
+                        if(f==0)
+                            break;
                     }
                     else
                         printf("Not available\n");
@@ -241,8 +212,7 @@ int main()
 
             check_Mate(X);
 
-           do{  flag=0;
-                freez=1;
+           do{
                 z=count-1;
                 printf("\nPlayer2 move:\n");
                 X.ID=2;
@@ -280,35 +250,10 @@ int main()
                     X.CrC=toupper(moves[0]);
                     X.DesR=moves[3]-48;
                     X.DesC=toupper(moves[2]);
-                    a=maze[X.CrR][X.CrC];
-                    b=maze[X.DesR][X.DesC];
                     available=pieces(X);
                     if (available==1){
-                         for(i=0;i<8;i++){
-                                for(j='A';j<'I';j++){
-                                    if(maze[i][j]=='K'){
-                                        flag=1;
-                                        X.ID=1;
-                                        maze[X.DesR][X.DesC]=a;
-                                        maze[X.CrR][X.CrC]='.';
-                                        freez=check(X,i,j);
-                                        X.ID=2;
-                                        maze[X.DesR][X.DesC]=b;
-                                        maze[X.CrR][X.CrC]=a;
-                                        if(freez==0){
-                                            Move(X);
-                                        }
-                                        else
-                                          printf("Not available(frozen)");
-
-                                    }
-                                    if(flag==1)
-                                        break;
-                                }
-                                if(flag==1)
-                                    break;
-                            }
-                            if(freez==0)
+                            f=freeze(X);
+                            if(f==0)
                                 break;
                     }
                     else
@@ -322,7 +267,6 @@ int main()
 
     return 0;
 }
-
 
 int pawn (moves X){
     int available;
@@ -863,6 +807,7 @@ int check(moves X,unsigned char i,unsigned char j){
     	if(counter2)
         	return 1;
     }
+
     else if(X.ID==2){
         X.DesC=j;
         X.DesR=i;
@@ -931,8 +876,72 @@ int check(moves X,unsigned char i,unsigned char j){
     	if(counter1)
         	return 1;
     }
+
     return 0;
 }
+
+int freeze(moves X){
+    unsigned char i,j,a,b,flag=0,f=1;
+    a=maze[X.CrR][X.CrC];
+    b=maze[X.DesR][X.DesC];
+    if(X.ID==1){
+        for(i=0;i<8;i++){
+            for(j='A';j<'I';j++){
+                if(maze[i][j]=='k'){
+                    flag=1;
+                    X.ID=2;
+                    maze[X.DesR][X.DesC]=a;
+                    maze[X.CrR][X.CrC]='.';
+                    f=check(X,i,j);
+                    X.ID=1;
+                    maze[X.DesR][X.DesC]=b;
+                    maze[X.CrR][X.CrC]=a;
+                    if(f==0){
+                        Move(X);
+                    }
+                    else
+                        printf("Not available(frozen)\n");
+                }
+                if(flag==1)
+                    break;
+            }
+            if(flag==1)
+                break;
+        }
+
+    }
+    else{
+
+        for(i=0;i<8;i++){
+            for(j='A';j<'I';j++){
+                if(maze[i][j]=='K'){
+                    flag=1;
+                    X.ID=1;
+                    maze[X.DesR][X.DesC]=a;
+                    maze[X.CrR][X.CrC]='.';
+                    f=check(X,i,j);
+                    X.ID=2;
+                    maze[X.DesR][X.DesC]=b;
+                    maze[X.CrR][X.CrC]=a;
+                    if(f==0){
+                        Move(X);
+                    }
+                    else
+                        printf("Not available(frozen)\n");
+                }
+                if(flag==1)
+                    break;
+            }
+            if(flag==1)
+                break;
+        }
+
+    }
+
+    return f;
+
+}
+
 
 void check_Mate(moves X){
 	King_I index = Index(X,0);
@@ -972,6 +981,6 @@ void check_Mate(moves X){
     else if ((available==1)&&(Count==8)&&(flag=0)){
     	printf("\nSTALEMATE!!\n");
     	exit(1);
-    }
+}
 }
 
