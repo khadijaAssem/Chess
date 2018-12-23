@@ -38,7 +38,7 @@ int rook(moves X);
 int Bishop(moves X);
 int Knight(moves X);
 void Move(moves X);
-void Undo(moves X);
+void undo(moves X);
 void print_redo(int z);
 void print_undo(int z);
 void check_Mate(moves X);
