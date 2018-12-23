@@ -38,6 +38,7 @@ int Knight(moves X);
 void Move(moves X);
 void Undo(moves X);
 int check(moves X,unsigned char i, unsigned char j);
+void check_Mate(moves X);
 
 void Print_Maze(unsigned char N1,unsigned char N2){
     unsigned char i,j;
@@ -560,7 +561,6 @@ int Queen(moves X){
 
 int King(moves X){
     unsigned char available;
-    unsigned char Poo;
     char DiffC=X.CrC-X.DesC ,DiffR=X.CrR-X.DesR ;
      if((X.ID==1 && maze[X.CrR][X.CrC]=='k' && maze[X.DesR][X.DesC]<97) || (X.ID==2 && maze[X.CrR][X.CrC]=='K' && (maze[X.DesR][X.DesC]<65||maze[X.DesR][X.DesC]>90))){
         if(((DiffC==0)&&(abs(DiffR)==1))||((abs(DiffC)==1)&&(DiffR==0))||((abs(DiffC)==1)&&(abs(DiffR)==1))){
@@ -783,18 +783,18 @@ int check(moves X,unsigned char i,unsigned char j){
     	if(counter1)
         	return 1;
     }
-    else return 0;
+    return 0;
 }
 
 void check_Mate(moves X){
 	King_I index = Index(X,0);
 
-	unsigned char i,j,available=0,Count=0,flag=0;
+	 char i,j,available=0,Count=0,flag=0;
 	if (X.ID==1){
 		for (i=index.R02-1;i<=index.R02+1;i++){
 	        for (j=index.C02-1;j<=index.C02+1;j++){
 	        	if (check(X,i,j)==1){
-	            	if ((i==index.R02)&& (j== index.C02))
+	            	if ((i == index.R02)&& (j== index.C02))
 	            		flag=1;
 	           	    available=1;
 	                Count++;
@@ -806,8 +806,8 @@ void check_Mate(moves X){
 		for (i=index.R01-1;i<=index.R01+1;i++){
 	        for (j=index.C01-1;j<=index.C01+1;j++){
 	        	if (check(X,i,j)==1){
-	            	if ((i == index.R01) && (j == index.C01))
-	            		flag==1;
+	            	if ((i == index.R01)&& (j== index.C01))
+	            		flag=1;
 	           	    available=1;
 	                Count++;
 	            }
