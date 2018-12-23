@@ -76,6 +76,7 @@ void Print_Maze(unsigned char N1,unsigned char N2){
         printf("\n\n");
     }
     printf ("\n\n\t\tA\tB\tC\tD\tE\tF\tG\tH\n\n");
+    printf("\npress(U)for undo & (R)for redo\n");
 
 }
 void Maze(){
