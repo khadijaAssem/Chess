@@ -839,7 +839,7 @@ void print_redo(int z){
 }*/
 int check(moves X,unsigned char i,unsigned char j){
     unsigned char available=0,n,m;
-
+    unsigned char counter1=0,counter2=0;
     if (X.ID==1){
         X.DesC=j;
         X.DesR=i;
@@ -847,30 +847,42 @@ int check(moves X,unsigned char i,unsigned char j){
             for(n='A';n<'I';n++){
                 X.CrC=n;
                 X.CrR=m;
-                if(maze[m][n]=='p')
+                if(maze[m][n]=='p'){
                     available=pawn(X);
-
-                else if(maze[m][n]=='n')
+                    if(available==1)
+                        counter2++;
+                }
+                else if(maze[m][n]=='n'){
                     available=Knight(X);
-
-                else if(maze[m][n]=='r')
+                    if(available==1)
+                        counter2++;
+                  }                
+                else if(maze[m][n]=='r'){
                     available=rook(X);
-
-                else if(maze[m][n]=='b')
+                    if(available==1)
+                        counter2++;
+                }
+                else if(maze[m][n]=='b'){
                     available=Bishop(X);
-
-                else if(maze[m][n]=='q')
+                    if(available==1)
+		    	Counter2++;
+                }
+                else if(maze[m][n]=='q'){
                     available=Queen(X);
-
-                else if(maze[m][n]=='k')
+                    if(available==1)
+		    	Counter2++;
+                }
+                else if(maze[m][n]=='k'){
                     available=King(X,1);
+                    if(available==1)
+		    Counter2++;
+                }
 
             }
         }
-    	if(available)
+    	if(counter2)
         	return 1;
     }
-
     else if(X.ID==2){
         X.DesC=j;
         X.DesR=i;
@@ -878,30 +890,42 @@ int check(moves X,unsigned char i,unsigned char j){
             for(n='A';n<'I';n++){
                 X.CrC=n;
                 X.CrR=m;
-                if(maze[m][n]=='P')
+                if(maze[m][n]=='P'){
                     available=pawn(X);
-
-                else if(maze[m][n]=='N')
+                    if(available==1)
+		    	Counter1++;
+                }
+                else if(maze[m][n]=='N'){
                     available=Knight(X);
-
-                else if(maze[m][n]=='R')
+                    if(available==1)
+		    	Counter1++;
+		}
+                else if(maze[m][n]=='R'){
                     available=rook(X);
-
-                else if(maze[m][n]=='B')
+                    if(available==1)
+		    	Counter1++;
+                }
+                else if(maze[m][n]=='B'){
                     available=Bishop(X);
-
-                else if(maze[m][n]=='Q')
+                    if(available==1)
+		    	Counter1++;
+                }
+                else if(maze[m][n]=='Q'){
                     available=Queen(X);
-
-                else if(maze[m][n]=='K')
+                    if(available==1)
+		    	Counter1++;
+                }
+                else if(maze[m][n]=='K'){
                     available=King(X,1);
+                    if(available==1)
+		    	Counter1++;
+                }
 
             }
         }
-    	if(available)
+    	if(counter1)
         	return 1;
     }
-
     return 0;
 }
 int check_Mate(moves X){
