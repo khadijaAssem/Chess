@@ -70,11 +70,11 @@ void Print_Maze(out_parts total){
                 printf("%c",total.Out01[total.N.N1-1].name);
         }
 
-        printf("\t%d",i);
+        printf("\t%d",i+1);
         for (j='A';j<='H';j++){
            printf("\t%c",maze[i][j]);
         }
-        printf("\t%d\t",i);
+        printf("\t%d\t",i+1);
         if (total.N.N2>0&&2*i<total.N.N2){
             if(total.N.N2%2==0)
                 printf("%c %c",total.Out02[2*i].name,total.Out02[2*i+1].name);
@@ -198,9 +198,9 @@ int main()
                         printf("Not available");
                 }
                 else{
-                    X.CrR=moves[1]-48;
+                    X.CrR=moves[1]-49;
                     X.CrC=toupper(moves[0]);
-                    X.DesR=moves[3]-48;
+                    X.DesR=moves[3]-49;
                     X.DesC=toupper(moves[2]);
                     available=pieces(X,0);
                     if (available==1){
@@ -259,9 +259,9 @@ int main()
                         printf("Not available");
                 }
                 else{
-                    X.CrR=moves[1]-48;
+                    X.CrR=moves[1]-49;
                     X.CrC=toupper(moves[0]);
-                    X.DesR=moves[3]-48;
+                    X.DesR=moves[3]-49;
                     X.DesC=toupper(moves[2]);
                     available=pieces(X,0);
                     if (available==1){
@@ -1123,17 +1123,3 @@ void Save(){
     fclose(fb);
 }
 void Load(){
-    FILE *fb;
-    fb = fopen("Game.txt","r");
-    char read[200];
-    while(!feof(fb)){
-        fgets(read,200,fb);
-        puts(read);
-    }
-    fclose(fb);
-}
-
-  
-          
-       
-	
