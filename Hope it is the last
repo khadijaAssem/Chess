@@ -242,7 +242,7 @@ int Game(unsigned char flag){
 
             if(c1==2){
                 c2=Stale_Mate(X);
-                { printf("CHECKMATE!!!\n");printf ("\nIt's Done Player 2 won :)");return 0;}
+                if (c2){ printf("CHECKMATE!!!\n");printf ("\nIt's Done Player 2 won :)");return 0;}
                 else printf("CHECK!!!\n");
 
             }
