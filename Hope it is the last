@@ -1128,7 +1128,7 @@ void Save(){
     fprintf(fb,"&");
     for(i=0;i<total.N.N2;i++)
         fprintf(fb,"%c",total.Out02[i].name);
-    //fprintf(fb,"&");
+    fprintf(fb,"&");
     fclose(fb);
 }
 out_parts Load(){
