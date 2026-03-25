@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1545130477 source:c:\users\khadija assem\desktop\project chess#9\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
